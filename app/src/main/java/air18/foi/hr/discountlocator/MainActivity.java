@@ -18,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import com.air.ws.core.CurrentActivity;
 
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         initializeNavigationManager();
         startMainModule();
+
+        AppCenter.start(getApplication(), "0db41b33-0adb-42b4-8586-9a8d2feea3b7",
+                Analytics.class, Crashes.class);
     }
 
     private void setCurrentActivity() {
