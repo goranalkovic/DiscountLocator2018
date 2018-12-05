@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,23 +17,32 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.air.ws.core.CurrentActivity;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
 
-import com.air.ws.core.CurrentActivity;
-
 import air18.foi.hr.database.MainDatabase;
-import air18.foi.hr.discountlocator.fragments.DiscountListFragment;
 import air18.foi.hr.discountlocator.helper.Util;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener, NavigationView.OnNavigationItemSelectedListener, FragmentManager.OnBackStackChangedListener {
 
-    private Util util = new Util();
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
     NavigationView navigationView;
+    View.OnClickListener navigationClick = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            } else {
+                onBackPressed();
+            }
+        }
+    };
+    private Util util = new Util();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +72,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         CurrentActivity.setActivity(this);
     }
 
-    private void initializeLayout()
-    {
+    private void initializeLayout() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -82,8 +89,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    private void setBackStackChangeListener()
-    {
+    private void setBackStackChangeListener() {
         getSupportFragmentManager().addOnBackStackChangedListener(this);
     }
 
@@ -109,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.activity_app_preference:
                 Intent intent = new Intent(this, AppPreferenceActivity.class);
                 startActivity(intent);
@@ -127,8 +133,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         // Handle navigation view menuItem clicks here.
-        switch(menuItem.getItemId())
-        {
+        switch (menuItem.getItemId()) {
             case R.id.menu_about:
                 //do something
                 break;
@@ -140,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         //drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -163,25 +167,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        else{
+        } else {
             super.onBackPressed();
         }
     }
-
-
-    View.OnClickListener navigationClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(getSupportFragmentManager().getBackStackEntryCount() == 0) {
-                drawerLayout.openDrawer(GravityCompat.START);
-            }
-            else{
-                onBackPressed();
-            }
-        }
-    };
 
 }
